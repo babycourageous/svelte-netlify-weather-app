@@ -21,6 +21,14 @@
     skycons = new Skycons({ color: 'white' })
   }
 
+  function initPlaces() {
+    var placesAutocomplete = places({
+      appId: 'pl000XLR3KOB',
+      apiKey: 'be931dd1c86b72dae51db881ff15f04b',
+      container: document.querySelector('#search'),
+    }).configure({ type: 'city' })
+  }
+
   function hyphenate(str) {
     return str.split(' ').join('-')
   }
@@ -70,15 +78,21 @@
     on:load={initializeSkycons}>
 
   </script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/places.js@1.18.1"
+    on:load={initPlaces}>
+
+  </script>
 </svelte:head>
 
 <main class="flex justify-center pt-8">
   <div class="mb-8 text-white">
     <input
       id="search"
-      type="text"
+      type="search"
       class="form-input block w-full text-gray-800"
     />
+    <p class="mt-4 text-gray-800 text-center">{location.name}</p>
     <div
       class="mt-4 w-128 max-w-lg font-sans overflow-hidden bg-gray-900
       rounded-lg shadow-lg"
@@ -127,3 +141,28 @@
     </div>
   </div>
 </main>
+
+<style type="text/postcss">
+  :global([type='search']::-webkit-search-cancel-button),
+  :global([type='search']::-webkit-search-decoration) {
+    -webkit-appearance: none;
+  }
+
+  :global([type='search']::-ms-clear) {
+    display: none;
+  }
+  :global(.ap-suggestion) {
+    @apply text-gray-700;
+  }
+
+  :global(.ap-address) {
+    @apply text-gray-700;
+  }
+  :global(.ap-suggestion-icon svg) {
+    @apply inline-block;
+    @apply -mt-3;
+  }
+  :global(.ap-footer svg) {
+    display: inline;
+  }
+</style>

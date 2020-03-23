@@ -1,12 +1,38 @@
 {
   "name": "svelte-netlify-weather-app",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^2.0.6",
+    "@rollup/plugin-commonjs": "^11.0.2",
+    "@rollup/plugin-node-resolve": "^7.1.1",
+    "autoprefixer": "^9.7.4",
+    "babel-eslint": "^10.0.3",
+    "cssnano": "^4.1.10",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-svelte3": "^2.7.3",
+    "npm-run-all": "^4.1.5",
+    "postcss": "^7.0.27",
+    "postcss-import": "^12.0.1",
+    "precss": "^4.0.0",
+    "prettier": "^1.18.2",
+    "prettier-plugin-svelte": "^0.7.0",
+    "rollup": "^1.31.1",
+    "rollup-plugin-livereload": "^1.0.0",
+    "rollup-plugin-postcss": "^2.1.1",
+    "rollup-plugin-svelte": "^5.0.3",
+    "rollup-plugin-terser": "^5.2.0",
+    "svelte": "^3.19.0",
+    "svelte-preprocess-postcss": "^1.1.0",
+    "tailwindcss": "^1.2.0"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "dependencies": {
+    "sirv-cli": "^0.4.4"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "start": "sirv public"
+  }
 }

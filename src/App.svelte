@@ -1,5 +1,17 @@
 <script>
+  import { onMount } from 'svelte'
+
   let daily = [1, 2, 3, 4, 5]
+
+  async function fetchData() {
+    const response = await fetch(`/.netlify/functions/dark-sky`)
+    const data = await response.json()
+    console.log(data)
+  }
+
+  onMount(() => {
+    fetchData()
+  })
 </script>
 
 <main class="flex justify-center pt-8">

@@ -10,7 +10,7 @@
 
   async function fetchData() {
     const response = await fetch(
-      `/.netlify/functions/dark-sky?lat=${location.lat}&lng=${location.lng}`
+      `/api/weather?lat=${location.lat}&lng=${location.lng}`
     )
     const data = await response.json()
     console.log(data)

@@ -10,6 +10,13 @@
   # Directory with the serverless Lambda functions to deploy to AWS.
   functions = "src/functions/"
 
-  [dev]
+[dev]
   command = "npm run dev" # Command to start your dev server
   publish = "public" # If you use a _redirect file, provide the path to your static content folder
+
+[[redirects]]
+  from = "/api/weather/*"
+  to = "/.netlify/functions/dark-sky/:splat"
+  query = {lat = ":lat", lng = ":lng"}
+  status = 200
+  force = true

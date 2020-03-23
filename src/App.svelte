@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from 'svelte'
+  import { onMount, tick } from 'svelte'
 
   let skycons
 
@@ -15,7 +15,7 @@
     lat: 41.9482,
     lng: -87.6564,
   }
-  let daily = [1, 2, 3, 4, 5]
+  let daily = []
 
   function initializeSkycons() {
     skycons = new Skycons({ color: 'white' })
@@ -23,6 +23,13 @@
 
   function hyphenate(str) {
     return str.split(' ').join('-')
+  }
+
+  function convertToDay(unix) {
+    const newDate = new Date(unix * 1000)
+    const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
+
+    return days[newDate.getDay()]
   }
 
   async function fetchData() {
@@ -37,7 +44,18 @@
     currentTemp.summary = summary
     currentTemp.icon = hyphenate(icon)
 
+    daily = data.daily.data.filter((day, index) => index < 5)
+
     skycons.add('iconCurrent', currentTemp.icon)
+    await tick()
+
+    daily.forEach((day, index) => {
+      const iconID = `icon-week-${index + 1}`
+      skycons.add(
+        iconID,
+        document.getElementById(iconID).getAttribute('data-icon')
+      )
+    })
     skycons.play()
   }
 
@@ -82,19 +100,26 @@
       </div>
 
       <div class="text-sm bg-gray-800 overflow-hidden">
-        {#each daily as item, index}
+        {#each daily as { time, icon, summary, temperatureHigh, temperatureLow }, index (time)}
           <div
             class="flex items-center px-6 py-4"
             class:bg-gray-700={index % 2}
           >
-            <div class="w-1/6 text-lg text-gray-200">DOW : {item}</div>
+            <div class="w-1/6 text-lg text-gray-200">{convertToDay(time)}</div>
             <div class="flex items-center w-2/3 px-4">
-              <div>ICON</div>
-              <div class="ml-3">Cloudy with a chance of showers</div>
+              <div>
+                <canvas
+                  id={`icon-week-${index + 1}`}
+                  data-icon={hyphenate(icon)}
+                  width="24"
+                  height="24"
+                />
+              </div>
+              <div class="ml-3">{summary}</div>
             </div>
             <div class="w-1/6 text-right">
-              <div>5°C</div>
-              <div>-2°C</div>
+              <div>{Math.round(temperatureHigh)}°C</div>
+              <div>{Math.round(temperatureLow)}°C</div>
             </div>
           </div>
         {/each}

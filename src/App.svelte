@@ -2,6 +2,7 @@
   import { onMount, tick } from 'svelte'
 
   let skycons
+  let placesAutocomplete
 
   let currentTemp = {
     actual: '',
@@ -17,16 +18,25 @@
   }
   let daily = []
 
+  $: fetchData(location.lat, location.lng)
+
   function initializeSkycons() {
     skycons = new Skycons({ color: 'white' })
   }
 
   function initPlaces() {
-    var placesAutocomplete = places({
+    placesAutocomplete = places({
       appId: 'pl000XLR3KOB',
       apiKey: 'be931dd1c86b72dae51db881ff15f04b',
       container: document.querySelector('#search'),
     }).configure({ type: 'city' })
+
+    placesAutocomplete.on('change', function(e) {
+      location = {
+        name: `${e.suggestion.name}, ${e.suggestion.country}`,
+        ...e.suggestion.latlng,
+      }
+    })
   }
 
   function hyphenate(str) {

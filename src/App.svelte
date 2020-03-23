@@ -1,6 +1,13 @@
 <script>
   import { onMount } from 'svelte'
 
+  let currentTemp = {
+    actual: '',
+    feels: '',
+    summary: '',
+    icon: '',
+  }
+
   let location = {
     name: 'Chicago, Illonois',
     lat: 41.9482,
@@ -13,7 +20,12 @@
       `/api/weather?lat=${location.lat}&lng=${location.lng}`
     )
     const data = await response.json()
-    console.log(data)
+
+    const { temperature, apparentTemperature, summary, icon } = data.currently
+    currentTemp.actual = Math.round(temperature)
+    currentTemp.feels = Math.round(apparentTemperature)
+    currentTemp.summary = summary
+    currentTemp.icon = icon
   }
 
   onMount(() => {
@@ -35,12 +47,12 @@
       <div class="flex items-center justify-between px-6 py-8">
         <div class="flex items-center">
           <div>
-            <div class="text-6xl font-semibold">8°C</div>
-            <div>Feels like 2°C</div>
+            <div class="text-6xl font-semibold">{currentTemp.actual}°C</div>
+            <div>Feels like {currentTemp.feels}°C</div>
           </div>
           <div class="mx-5">
-            <div class="font-semibold">Cloudy</div>
-            <div>Toronto, Canada</div>
+            <div class="font-semibold">{currentTemp.summary}</div>
+            <div>{location.name}</div>
           </div>
         </div>
         <div>ICON</div>

@@ -1,6 +1,8 @@
 <script>
   import { onMount } from 'svelte'
 
+  let skycons
+
   let currentTemp = {
     actual: '',
     feels: '',
@@ -15,6 +17,14 @@
   }
   let daily = [1, 2, 3, 4, 5]
 
+  function initializeSkycons() {
+    skycons = new Skycons({ color: 'white' })
+  }
+
+  function hyphenate(str) {
+    return str.split(' ').join('-')
+  }
+
   async function fetchData() {
     const response = await fetch(
       `/api/weather?lat=${location.lat}&lng=${location.lng}`
@@ -25,13 +35,24 @@
     currentTemp.actual = Math.round(temperature)
     currentTemp.feels = Math.round(apparentTemperature)
     currentTemp.summary = summary
-    currentTemp.icon = icon
+    currentTemp.icon = hyphenate(icon)
+
+    skycons.add('iconCurrent', currentTemp.icon)
+    skycons.play()
   }
 
   onMount(() => {
     fetchData()
   })
 </script>
+
+<svelte:head>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/skycons/1396634940/skycons.min.js"
+    on:load={initializeSkycons}>
+
+  </script>
+</svelte:head>
 
 <main class="flex justify-center pt-8">
   <div class="mb-8 text-white">
@@ -55,7 +76,9 @@
             <div>{location.name}</div>
           </div>
         </div>
-        <div>ICON</div>
+        <div>
+          <canvas id="iconCurrent" width="96" height="96" />
+        </div>
       </div>
 
       <div class="text-sm bg-gray-800 overflow-hidden">

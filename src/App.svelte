@@ -1,10 +1,17 @@
 <script>
   import { onMount } from 'svelte'
 
+  let location = {
+    name: 'Chicago, Illonois',
+    lat: 41.9482,
+    lng: -87.6564,
+  }
   let daily = [1, 2, 3, 4, 5]
 
   async function fetchData() {
-    const response = await fetch(`/.netlify/functions/dark-sky`)
+    const response = await fetch(
+      `/.netlify/functions/dark-sky?lat=${location.lat}&lng=${location.lng}`
+    )
     const data = await response.json()
     console.log(data)
   }

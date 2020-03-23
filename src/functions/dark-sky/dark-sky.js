@@ -4,7 +4,13 @@ const fetch = require('node-fetch')
 exports.handler = async function(event, context) {
   const API_URL = 'https://api.darksky.net/forecast'
 
-  const DARKSKY_URL = `${API_URL}/36bebce3a8ac692b6bd1df132454d05a/41.9482,-87.6564`
+  // pull lat and lng params out of query string
+  const { lat, lng } = event.queryStringParameters
+
+  // Get env var values defined in our Netlify site UI
+  const { DARKSKY_API_KEY } = process.env
+
+  const DARKSKY_URL = `${API_URL}/${DARKSKY_API_KEY}/${lat},${lng}`
 
   try {
     const response = await fetch(DARKSKY_URL, {

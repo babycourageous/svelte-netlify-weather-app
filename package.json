@@ -13,6 +13,7 @@
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-svelte3": "^2.7.3",
+    "netlify-lambda": "^1.6.3",
     "npm-run-all": "^4.1.5",
     "postcss": "^7.0.27",
     "postcss-import": "^12.0.1",
@@ -32,6 +33,7 @@
     "sirv-cli": "^0.4.4"
   },
   "scripts": {
+    "prebuild": "netlify-lambda install ./src/functions",
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "start": "sirv public"

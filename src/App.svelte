@@ -1,12 +1,14 @@
-<script>
+<script lang="ts">
   import { onMount, tick } from 'svelte'
+  import Skycons from 'skycons'
+  import places from 'places.js'
 
-  let skycons
-  let placesAutocomplete
+  let skycons: { add: (arg0: string, arg1: string) => void; play: () => void }
+  let placesAutocomplete: { on: (arg0: string, arg1: (e: any) => void) => void }
 
   let currentTemp = {
-    actual: '',
-    feels: '',
+    actual: 0,
+    feels: 0,
     summary: '',
     icon: '',
   }
@@ -16,6 +18,7 @@
     lat: 41.9482,
     lng: -87.6564,
   }
+
   let daily = []
 
   $: fetchData(location.lat, location.lng)
@@ -28,10 +31,10 @@
     placesAutocomplete = places({
       appId: 'pl000XLR3KOB',
       apiKey: 'be931dd1c86b72dae51db881ff15f04b',
-      container: document.querySelector('#search'),
+      container: document.querySelector('#search') as HTMLInputElement,
     }).configure({ type: 'city' })
 
-    placesAutocomplete.on('change', function(e) {
+    placesAutocomplete.on('change', function (e) {
       location = {
         name: `${e.suggestion.name}, ${e.suggestion.country}`,
         ...e.suggestion.latlng,
@@ -39,18 +42,18 @@
     })
   }
 
-  function hyphenate(str) {
+  function hyphenate(str: string) {
     return str.split(' ').join('-')
   }
 
-  function convertToDay(unix) {
+  function convertToDay(unix: number) {
     const newDate = new Date(unix * 1000)
     const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
 
     return days[newDate.getDay()]
   }
 
-  async function fetchData() {
+  async function fetchData(lat?: number, lon?: number) {
     const response = await fetch(
       `/api/weather?lat=${location.lat}&lng=${location.lng}`
     )
@@ -62,7 +65,7 @@
     currentTemp.summary = summary
     currentTemp.icon = hyphenate(icon)
 
-    daily = data.daily.data.filter((day, index) => index < 5)
+    daily = data.daily.data.filter((day: string, index: number) => index < 5)
 
     skycons.add('iconCurrent', currentTemp.icon)
     await tick()
@@ -78,22 +81,11 @@
   }
 
   onMount(() => {
+    initializeSkycons()
+    initPlaces()
     fetchData()
   })
 </script>
-
-<svelte:head>
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/skycons/1396634940/skycons.min.js"
-    on:load={initializeSkycons}>
-
-  </script>
-  <script
-    src="https://cdn.jsdelivr.net/npm/places.js@1.18.1"
-    on:load={initPlaces}>
-
-  </script>
-</svelte:head>
 
 <main class="flex justify-center pt-8">
   <div class="mb-8 text-white">
